@@ -11,7 +11,7 @@ export default {
         const speed = "0.0001";
         const fakeUsage = "120 MB of 8 GB";
         const fakeRamBar = "[████████░░] 80%";
-        const pluginsCount = 326;
+        const pluginsCount = 400;
         const version = "1.0.0";
         const botMode = mode || "Private";
 
@@ -69,6 +69,14 @@ export default {
 │➽ ${usedPrefix}twitter
 │➽ ${usedPrefix}song
 │➽ ${usedPrefix}video
+┗▣ 
+
+┏▣ ◈ *API (NO KEY)* ◈
+│➽ ${usedPrefix}joke
+│➽ ${usedPrefix}quote
+│➽ ${usedPrefix}fact
+│➽ ${usedPrefix}anime
+│➽ ${usedPrefix}waifu
 ┗▣ 
 
 POWERED BY BROKEN LORD

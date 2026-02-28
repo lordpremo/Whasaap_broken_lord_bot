@@ -6,6 +6,7 @@ import ownerPlugin from "./plugins/owner.js";
 import settingsPlugin from "./plugins/settings.js";
 import toolsPlugin from "./plugins/tools.js";
 import downloadPlugin from "./plugins/download.js";
+import apiPlugin from "./plugins/api.js";
 
 export default async function handler(sock, m) {
     try {
@@ -126,6 +127,16 @@ export default async function handler(sock, m) {
         });
 
         await downloadPlugin.handleCommand({
+            sock,
+            from,
+            senderJid,
+            isRuntimeOwner,
+            command,
+            args,
+            m
+        });
+
+        await apiPlugin.handleCommand({
             sock,
             from,
             senderJid,

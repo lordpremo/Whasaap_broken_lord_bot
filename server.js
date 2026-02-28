@@ -18,7 +18,7 @@ app.use(express.static("public"));
 let sock = null;
 
 async function startBot() {
-    const { state, saveCreds } = await useMultiFileAuthState("./session");
+    const { state, saveCreds } = await useMultiFileAuthState("session");
     const { version } = await fetchLatestBaileysVersion();
 
     sock = makeWASocket({
@@ -32,11 +32,8 @@ async function startBot() {
 
     sock.ev.on("creds.update", saveCreds);
 
-    sock.ev.on("connection.update", (update) => {
-        const { connection } = update;
-        if (connection === "open") {
-            console.log("✅ BROKEN LORD MD Connected to WhatsApp");
-        }
+    sock.ev.on("connection.update", ({ connection }) => {
+        if (connection === "open") console.log("✅ BROKEN LORD MD Connected to WhatsApp");
         if (connection === "close") {
             console.log("❌ Connection closed, restarting...");
             startBot();
@@ -55,32 +52,28 @@ async function startBot() {
     });
 }
 
-// WEBSITE HOME
+// HOME PAGE
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
-// PAIR CODE API
-app.get("/pair", async (req, res) => {
+// API PAIR
+app.post("/api/pair", async (req, res) => {
     try {
-        const { number } = req.query;
-        if (!number) return res.json({ error: "Missing number" });
-
-        if (!sock) return res.json({ error: "Bot not ready, try again in a few seconds" });
+        const { number } = req.body;
+        if (!number) return res.status(400).json({ error: "number required" });
+        if (!sock) return res.status(500).json({ error: "bot not ready" });
 
         const code = await sock.requestPairingCode(number);
-        return res.json({
-            number,
-            pairingCode: code
-        });
+        return res.json({ code });
     } catch (e) {
         console.log("PAIR ERROR:", e);
-        res.json({ error: "Failed to generate pair code" });
+        return res.status(500).json({ error: "failed to generate code" });
     }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🌍 BROKEN LORD MD Website running on port ${PORT}`);
+    console.log(`🌍 Pair web running on port ${PORT}`);
     startBot().catch(e => console.log("Fatal bot error:", e));
 });

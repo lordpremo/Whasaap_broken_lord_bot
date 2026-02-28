@@ -34,9 +34,8 @@ export default {
     async handleCommand({ sock, from, senderJid, isRuntimeOwner, command, args, groupSettings, db, saveDB, m }) {
         const send = (t) => sock.sendMessage(from, { text: t });
 
-        const isAdmin = m.key.participant
-            ? (await sock.groupMetadata(from)).participants.find((p) => p.id === senderJid)?.admin
-            : false;
+        const meta = await sock.groupMetadata(from);
+        const isAdmin = meta.participants.find((p) => p.id === senderJid)?.admin;
 
         if (!["antilink", "antibadword", "addbadword", "delbadword", "listbadword"].includes(command)) return;
 
